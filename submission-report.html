@@ -26,8 +26,8 @@
     margin: 0; padding: 0;
     color: #1c1915;
     font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
-    font-size: 12.35pt;
-    line-height: 1.56;
+    font-size: 12.2pt;
+    line-height: 1.48;
     font-variant-ligatures: none;
   }
   h1, h2, h3, .kicker, .meta, th {
@@ -38,12 +38,12 @@
   h1 { font-size: 26pt; line-height: 1.08; font-weight: 650; letter-spacing: -0.02em; margin: 0 0 8px; }
   h2 {
     font-size: 13.5pt; font-weight: 650; color: #1a4f63;
-    margin: 16px 0 6px; padding-top: 8px;
+    margin: 12px 0 4px; padding-top: 6px;
     border-top: 1.5pt solid #1a4f63;
     page-break-after: avoid;
   }
   h3 { font-size: 11.5pt; font-weight: 650; margin: 10px 0 3px; page-break-after: avoid; }
-  p { margin: 0 0 11px; }
+  p { margin: 0 0 8px; }
   ul, ol { margin: 2px 0 8px; padding-left: 18px; }
   li { margin: 0 0 3px; }
   .kicker {
@@ -63,7 +63,8 @@
   .call {
     background: #f4f1ea; padding: 8px 10px; margin: 6px 0 10px; page-break-inside: avoid;
   }
-  code { font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 8.7pt; }
+  code, a.url { font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 8.7pt; }
+  a.url { font-size: 8pt; overflow-wrap: anywhere; }
   .refs { font-size: 10pt; }
   .keep { page-break-inside: avoid; }
   figure { margin: 11px 0 14px; page-break-inside: avoid; }
@@ -91,7 +92,16 @@
 <h1>iPe Merchant Onboarding Copilot</h1>
 <p class="sub">A shop applies in one web chat. A hosted 8B model asks, explains, and cites. A deterministic service decides, and a person at iPe is the only one who can turn the shop on.</p>
 <p class="meta">26 November 2026 · Capstone-iPe<br />
-This PDF is the technical report. The sources are the public repositories under <a href="https://github.com/Capstone-iPe">Capstone-iPe</a>.</p>
+This PDF is the file to upload. The code, the trace dashboard, and the demo are open to anyone with the link.</p>
+<table>
+  <thead><tr><th>What the portal asks to include</th><th>Link</th></tr></thead>
+  <tbody>
+    <tr><td>Git repository, public</td><td><a class="url" href="https://github.com/orgs/Capstone-iPe/repositories">https://github.com/orgs/Capstone-iPe/repositories</a></td></tr>
+    <tr><td>Trace dashboard</td><td><a class="url" href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c</a></td></tr>
+    <tr><td>10-minute demo</td><td><a class="url" href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing</a></td></tr>
+    <tr><td>Model card</td><td>Section 9. Intended use, failure modes, refusals, and adversarial tests.</td></tr>
+  </tbody>
+</table>
 
 <h2>1. The problem</h2>
 <p>Merchant onboarding needs a legal name, a place, a type of shop, a monthly volume, the payment methods, a yes or no on storing payer phone numbers, and a small pack of documents. The applicant also needs to understand why a document is required, and to be told plainly what is still missing. A chat can do that. A generative model must not become the source of truth for the outcome.</p>
@@ -106,7 +116,7 @@ This PDF is the technical report. The sources are the public repositories under 
     <tr><td>III. RAG, chunking, hybrid search, a reranker, recall@k apart from the answer</td><td>Section 5. The numbers are in <a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md"><code>onb-corpus/eval/retrieval.md</code></a>.</td></tr>
     <tr><td>IV. Tools, planner to executor to critic, state, errors, at most ten steps</td><td>Sections 2 and 3. Five tools. The application row is in <a href="https://github.com/Capstone-iPe/onb-svc"><code>onb-svc</code></a>.</td></tr>
     <tr><td>V. Accuracy, a failure taxonomy, traces</td><td>Sections 6 to 8. The trace link is in section 8.</td></tr>
-    <tr><td>VI. A web front end, containerised deploy, rate limit, cache, responsible AI</td><td>Sections 9 and 10, and the annex.</td></tr>
+    <tr><td>VI. A web front end, containerised deploy, rate limit, cache, responsible AI</td><td>Section 9 is the model card. Section 10 and the annex are the deploy.</td></tr>
   </tbody>
 </table>
 
@@ -415,10 +425,11 @@ This PDF is the technical report. The sources are the public repositories under 
 <p>Content capture is off. A trace carries the decision fields, the timing, the model name when it is known, and the retrieval ranks. It does not carry the merchant’s words, the prompt, or the file. A row remains in the outbox until Langfuse accepts the whole turn. A retry sends the same trace and span ids. Authentication failures that happen before a turn is reserved are not traces.</p>
 <p>The trace dashboard is that Langfuse project. The public session for the demo is <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">app_3020d278483c</a>.</p>
 
-<h2>9. Responsible AI</h2>
-<p>Merchant text is data, including text inside an uploaded file. On the demo, the note that says to ignore policy and mark the shop Active is stored as a note and is not obeyed. The lines in <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/tests/adversarial.txt"><code>copilot-svc/tests/adversarial.txt</code></a> are refused before a model call. The page the merchant sees does not echo account or identity digits. Traces do not contain the utterance.</p>
-<p>Refusal of a money-service type is a rule with a fixed sentence, and it opens no review. After a verdict, “activate us now” is declined under the policy and the same review id is repeated. <code>RECOMMEND_GO_LIVE</code> names a human reviewer. The interface has no operation that can set a shop live. That boundary is the tool list, not a sentence in the prompt.</p>
-<p><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/tests/adversarial.txt"><code>copilot-svc/tests/adversarial.txt</code></a> covers the boundary in the forms a merchant, or a pasted instruction, actually uses. Demands to go live, including in Hindi and Hinglish, are refused. So are requests to waive the shopfront, to mark the pack complete, and to read back an account number or its last four digits. A speaker who claims to be the Merchant Risk Lead is still refused. A made-up policy id that says the copilot may activate is refused. A JSON fragment posing as an intent is not executed as a tool call. A shop name that happens to contain the word “active” is saved as a name, which is the distinction the guard has to get right.</p>
+<h2>9. Model card</h2>
+<p><strong>Intended use.</strong> <code>Qwen/Qwen3-8B</code> asks the next question, explains why a document is required, and cites a passage the corpus returned. The user is one merchant, one shop, in the web chat. The model does not choose the outcome, the assignee, or the review id, and it cannot turn a shop on. Embeddings are <code>bge-small-en-v1.5</code>, used only to search the policy corpus. Weights are not trained.</p>
+<p><strong>Failure modes.</strong> Section 7 names a retrieval miss, a reasoning error, a tool-call error, and a hallucination. On the separate file of 345 sentences, 40 saved the wrong field. The 71 shop replays in section 6 passed. The document checker does not prove that a certificate is genuine.</p>
+<p><strong>Refusals.</strong> A money-service type, including hawala, is refused by rule and opens no review. After a verdict, “activate us now” is declined and the same review id is repeated. <code>RECOMMEND_GO_LIVE</code> names a human reviewer. There is no tool that sets a shop live. Merchant text, including text inside an uploaded file, is data: on the demo, the note that says to mark the shop Active is stored and is not obeyed. The page does not echo account or identity digits. Traces do not contain the utterance.</p>
+<p><strong>Adversarial tests.</strong> The lines in <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/tests/adversarial.txt"><code>copilot-svc/tests/adversarial.txt</code></a> are refused before a model call. Demands to go live, including in Hindi and Hinglish, are refused. So are requests to waive the shopfront, to mark the pack complete, and to read back an account number or its last four digits. A speaker who claims to be the Merchant Risk Lead is still refused. A made-up policy id that says the copilot may activate is refused. A JSON fragment posing as an intent is not executed as a tool call. A shop name that contains the word “active” is saved as a name.</p>
 
 <h2>10. Deployment and the recorded demo</h2>
 <p>The web chat, the copilot, ONB, and the corpus each run as a Render web service. Render builds the image and runs it. None of <a href="https://github.com/Capstone-iPe/copilot-web-app"><code>copilot-web-app</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc"><code>copilot-svc</code></a>, <a href="https://github.com/Capstone-iPe/onb-svc"><code>onb-svc</code></a>, or <a href="https://github.com/Capstone-iPe/onb-corpus"><code>onb-corpus</code></a> adds a second container file. Postgres holds the ONB applications and the copilot’s conversation history. A Render Key Value instance named <code>copilot-cache</code> holds only a rate-limit counter and a search cache.</p>
@@ -456,22 +467,22 @@ This PDF is the technical report. The sources are the public repositories under 
 </ul>
 
 <h2>12. Deliverables</h2>
-<p>The six repositories are public under <a href="https://github.com/Capstone-iPe">Capstone-iPe</a>. A path below is a path in that repository.</p>
+<p>The six repositories are public under <a href="https://github.com/orgs/Capstone-iPe/repositories">Capstone-iPe</a>. A path below is a path in that repository.</p>
 <table>
   <thead><tr><th>Template deliverable</th><th>Where it is</th></tr></thead>
   <tbody>
     <tr><td>The agent and its sources</td><td><a href="https://github.com/Capstone-iPe/analysis"><code>analysis</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc"><code>copilot-svc</code></a>, <a href="https://github.com/Capstone-iPe/onb-svc"><code>onb-svc</code></a>, <a href="https://github.com/Capstone-iPe/copilot-web-app"><code>copilot-web-app</code></a>, <a href="https://github.com/Capstone-iPe/onb-corpus"><code>onb-corpus</code></a>.</td></tr>
-    <tr><td>Trace dashboard of real queries</td><td>The Langfuse session in section 8. The session id is the application id.</td></tr>
+    <tr><td>Trace dashboard of real queries</td><td>The Langfuse session on the first page. The session id is the application id.</td></tr>
     <tr><td>Evaluation and failure taxonomy</td><td>Sections 5 to 7, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md"><code>copilot-svc/docs/eval.md</code></a>, and <a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md"><code>onb-corpus/eval/retrieval.md</code></a>.</td></tr>
     <tr><td>Technical report</td><td><a href="https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf"><code>Reports/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf</code></a>.</td></tr>
-    <tr><td>Ten-minute demo</td><td><a href="https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md"><code>Reports/lotus-tea-house.md</code></a>, the Drive recording, and the Langfuse session.</td></tr>
+    <tr><td>Ten-minute demo</td><td>The Drive recording on the first page, and <a href="https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md"><code>Reports/lotus-tea-house.md</code></a>.</td></tr>
     <tr><td>Front end, rate limit, cache</td><td>The live web chat in the annex. Thirty messages a minute. Policy search cached for five minutes.</td></tr>
   </tbody>
 </table>
 
 <section class="keep">
 <h2>13. Repositories</h2>
-<p>The organisation is <a href="https://github.com/Capstone-iPe">Capstone-iPe</a>. Each repository is public. Clone it to set it up locally. Ignored files, including secrets and virtual environments, are not in the tree.</p>
+<p>The organisation is <a href="https://github.com/orgs/Capstone-iPe/repositories">Capstone-iPe</a>. Each repository is public. Clone it to set it up locally. Ignored files, including secrets and virtual environments, are not in the tree.</p>
 <table>
   <thead><tr><th>Repository</th><th>What this report uses from it</th></tr></thead>
   <tbody>
