@@ -4,7 +4,7 @@ Written record of the iPe merchant-onboarding copilot. The product code is in [a
 
 | File | What it is |
 |---|---|
-| [iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf](iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf) | The 12-page submission report. [submission-report.html](submission-report.html) is its source |
+| [iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf](iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf) | The 12-page submission report. [submission-report.html](submission-report.html) is its source, and the same page is published at [capstone-ipe.github.io/Reports](https://capstone-ipe.github.io/Reports/) |
 | [lotus-tea-house.md](lotus-tea-house.md) | The live web demo: recording and the public Langfuse session |
 | [iPe_Merchant_Onboarding_Copilot_Evaluation_Report.md](iPe_Merchant_Onboarding_Copilot_Evaluation_Report.md) | Earlier evaluation draft |
 | [iPe_Merchant_Onboarding_Copilot_Technical_Report.md](iPe_Merchant_Onboarding_Copilot_Technical_Report.md) | Earlier technical draft |
