@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>iPe Merchant Onboarding Copilot — Submission Report</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 17mm 16mm 17mm;
+    @bottom-left {
+      content: "iPe Merchant Onboarding Copilot  ·  Track B  ·  26 November 2026";
+      font-family: "Avenir Next", "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 8pt;
+      color: #6e675c;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-family: "Avenir Next", "Helvetica Neue", Helvetica, sans-serif;
+      font-size: 8pt;
+      color: #6e675c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    color: #1c1915;
+    font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
+    font-size: 12.35pt;
+    line-height: 1.56;
+    font-variant-ligatures: none;
+  }
+  h1, h2, h3, .kicker, .meta, th {
+    font-family: "Avenir Next", "Helvetica Neue", Helvetica, sans-serif;
+  }
+  a { color: #1a4f63; text-decoration: none; }
+  h1 { font-size: 26pt; line-height: 1.08; font-weight: 650; letter-spacing: -0.02em; margin: 0 0 8px; }
+  h2 {
+    font-size: 13.5pt; font-weight: 650; color: #1a4f63;
+    margin: 16px 0 6px; padding-top: 8px;
+    border-top: 1.5pt solid #1a4f63;
+    page-break-after: avoid;
+  }
+  h3 { font-size: 11.5pt; font-weight: 650; margin: 10px 0 3px; page-break-after: avoid; }
+  p { margin: 0 0 11px; }
+  ul, ol { margin: 2px 0 8px; padding-left: 18px; }
+  li { margin: 0 0 3px; }
+  .kicker {
+    letter-spacing: 0.16em; text-transform: uppercase;
+    font-size: 8.5pt; font-weight: 600; color: #1a4f63; margin: 0 0 10px;
+  }
+  .sub { font-size: 12.5pt; line-height: 1.35; margin: 0 0 12px; color: #2c2824; }
+  .meta { font-size: 9pt; font-weight: 500; color: #5c564c; line-height: 1.45; margin: 0; }
+  .rule { height: 0; border: 0; border-top: 8px solid #1a4f63; margin: 0 0 16px; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.6pt; page-break-inside: avoid; }
+  th, td { text-align: left; vertical-align: top; padding: 4px 8px 4px 0; border-bottom: 0.4pt solid #e3dcd0; }
+  th {
+    font-size: 8pt; letter-spacing: 0.05em; text-transform: uppercase;
+    color: #5c564c; font-weight: 650; border-bottom: 1.2pt solid #1a4f63;
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .call {
+    background: #f4f1ea; padding: 8px 10px; margin: 6px 0 10px; page-break-inside: avoid;
+  }
+  code { font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 8.7pt; }
+  .refs { font-size: 10pt; }
+  .keep { page-break-inside: avoid; }
+  figure { margin: 11px 0 14px; page-break-inside: avoid; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption {
+    font-family: "Avenir Next", "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 8.5pt; color: #5c564c; margin: 6px 0 0; line-height: 1.4;
+  }
+  figcaption b { color: #1a4f63; font-weight: 650; }
+</style>
+</head>
+<body>
+
+<hr class="rule" />
+<p class="kicker">Capstone Track B · API-side · final submission</p>
+<h1>iPe Merchant Onboarding Copilot</h1>
+<p class="sub">A shop applies in one web chat. A hosted 8B model asks, explains, and cites. A deterministic service decides, and a person at iPe is the only one who can turn the shop on.</p>
+<p class="meta">26 November 2026 · Capstone-iPe<br />
+This PDF is the technical report. The sources that accompany it are Google Docs.</p>
+
+<h2>1. The problem</h2>
+<p>Merchant onboarding needs a legal name, a place, a type of shop, a monthly volume, the payment methods, a yes or no on storing payer phone numbers, and a small pack of documents. The applicant also needs to understand why a document is required, and to be told plainly what is still missing. A chat can do that. A generative model must not become the source of truth for the outcome.</p>
+<p>The product is one shop, one thread. The copilot asks for the single pending item, takes a PDF, JPG, or PNG, reads the application back, and submits only when every required slot is uploaded or the merchant has said the file is not available. The verdict names the outcome, the gaps, the assignee, the policy, and one review id. The thread stays open. A file that arrives later updates the verdict and keeps that id. Activation is a human act. There is no tool for it.</p>
+<p>A correct answer is the <em>Correct</em> list written for that shop before the agent existed: the outcome, the missing items, the assignee, a stable review id when one is due, and no sentence that says the shop is live. The gold set is 71 shops, G-001 to G-071, in the gold-set document. G-001 to G-050 were used while building. G-051 to G-071 were held out and run once. The set is not in the retrieval index.</p>
+<p>The worked example is Lotus Tea House: a cafe in Pune, ₹12,00,000 a month, registration and owner identity uploaded, bank proof, shopfront photograph, and addendum missing, with a note that demands the shop be marked Active. The correct result is in review, assigned to the Merchant Risk Lead, and unchanged by a later demand to activate. A hawala shop is refused and receives no review id.</p>
+<table>
+  <thead><tr><th>Template item</th><th>Where it is answered</th></tr></thead>
+  <tbody>
+    <tr><td>I. Specification and a gold set of 60–100, written first</td><td>The architecture note in the source pack, this section, and 71 shops in the gold-set document.</td></tr>
+    <tr><td>II. Three prompting strategies, and how the 8B breaks</td><td>Section 4. Structured few-shot 6/10. The other two strategies 0/10.</td></tr>
+    <tr><td>III. RAG, chunking, hybrid search, a reranker, recall@k apart from the answer</td><td>Section 5. The reranker was measured and not kept.</td></tr>
+    <tr><td>IV. Tools, planner to executor to critic, state, errors, at most ten steps</td><td>Sections 2 and 3. Five MCP tools. State is the ONB row.</td></tr>
+    <tr><td>V. Accuracy, a failure taxonomy, traces</td><td>Sections 6 to 8. Langfuse, not a local dashboard.</td></tr>
+    <tr><td>VI. A web front end, containerised deploy, rate limit, cache, responsible AI</td><td>Sections 9 and 10. Render web services. Key Value for the limit and the cache.</td></tr>
+  </tbody>
+</table>
+
+<h2>2. Architecture</h2>
+<p>The web chat talks only to the copilot, and only with the merchant’s Google bearer token. The copilot is the only service that prompts the language model. ONB owns the application, the files, the pending field, and the verdict. The policy corpus is a third service. The model never supplies a tool argument, and it never writes the outcome.</p>
+<figure>
+<svg viewBox="0 0 760 228" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The web chat calls only the copilot. The copilot calls the chat model, the corpus, and ONB. ONB calls the document check. The corpus calls embeddings.">
+  <defs>
+    <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#1a4f63"/>
+    </marker>
+  </defs>
+  <style>
+    .b { fill: #f4f7f8; stroke: #1a4f63; stroke-width: 1.25; }
+    .e { fill: #f8f3ea; stroke: #8a6a32; stroke-width: 1.25; }
+    .t { font-family: Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 650; fill: #1c1915; }
+    .s { font-family: Helvetica, Arial, sans-serif; font-size: 10px; fill: #5c564c; }
+    .a { stroke: #1a4f63; stroke-width: 1.25; fill: none; }
+    .al { font-family: Helvetica, Arial, sans-serif; font-size: 10px; fill: #1a4f63; }
+  </style>
+  <rect class="e" x="196" y="6" width="152" height="46" rx="2"/>
+  <text class="t" x="272" y="25" text-anchor="middle">Qwen3-8B</text>
+  <text class="s" x="272" y="40" text-anchor="middle">hosted chat</text>
+  <rect class="b" x="4" y="88" width="136" height="54" rx="2"/>
+  <text class="t" x="72" y="111" text-anchor="middle">Web chat</text>
+  <text class="s" x="72" y="127" text-anchor="middle">one thread</text>
+  <rect class="b" x="196" y="88" width="152" height="54" rx="2"/>
+  <text class="t" x="272" y="111" text-anchor="middle">Copilot</text>
+  <text class="s" x="272" y="127" text-anchor="middle">planner and critic</text>
+  <rect class="b" x="412" y="88" width="144" height="54" rx="2"/>
+  <text class="t" x="484" y="111" text-anchor="middle">ONB</text>
+  <text class="s" x="484" y="127" text-anchor="middle">rules and state</text>
+  <rect class="b" x="612" y="88" width="144" height="54" rx="2"/>
+  <text class="t" x="684" y="111" text-anchor="middle">Document check</text>
+  <text class="s" x="684" y="127" text-anchor="middle">model, else rules</text>
+  <rect class="b" x="196" y="176" width="152" height="46" rx="2"/>
+  <text class="t" x="272" y="195" text-anchor="middle">onb-corpus</text>
+  <text class="s" x="272" y="210" text-anchor="middle">hybrid search</text>
+  <rect class="e" x="412" y="176" width="144" height="46" rx="2"/>
+  <text class="t" x="484" y="195" text-anchor="middle">bge-small</text>
+  <text class="s" x="484" y="210" text-anchor="middle">hosted embeddings</text>
+  <line class="a" x1="140" y1="115" x2="192" y2="115" marker-end="url(#ah1)"/>
+  <text class="al" x="166" y="107" text-anchor="middle">Bearer</text>
+  <line class="a" x1="272" y1="88" x2="272" y2="52" marker-end="url(#ah1)"/>
+  <text class="al" x="280" y="74">ask</text>
+  <line class="a" x1="272" y1="142" x2="272" y2="176" marker-end="url(#ah1)"/>
+  <text class="al" x="280" y="164">search</text>
+  <line class="a" x1="348" y1="115" x2="408" y2="115" marker-end="url(#ah1)"/>
+  <text class="al" x="378" y="107" text-anchor="middle">MCP</text>
+  <line class="a" x1="556" y1="115" x2="608" y2="115" marker-end="url(#ah1)"/>
+  <text class="al" x="582" y="107" text-anchor="middle">verify</text>
+  <line class="a" x1="348" y1="199" x2="408" y2="199" marker-end="url(#ah1)"/>
+  <text class="al" x="378" y="191" text-anchor="middle">embed</text>
+</svg>
+<figcaption><b>Figure 1.</b> The browser talks only to the copilot. Cream boxes are the hosted models. ONB calls the document check, and the verdict stays in ONB.</figcaption>
+</figure>
+<table>
+  <thead><tr><th>Piece</th><th>What it owns</th></tr></thead>
+  <tbody>
+    <tr><td>Web chat</td><td>The React thread, sign-in, and the upload control. ConversationView v1.0, frozen in LLD-0002. Exam-scoring fields never reach the browser.</td></tr>
+    <tr><td>Copilot</td><td>The planner, executor, and critic over <code>Qwen/Qwen3-8B</code>. Policy search. The MCP client. Every sentence the merchant reads.</td></tr>
+    <tr><td>ONB</td><td>Deterministic Python. Five tools. The rules. One review id, allocated once.</td></tr>
+    <tr><td>onb-corpus</td><td>500 documents and 1,446 chunks. Hybrid search. Embeddings from <code>bge-small-en-v1.5</code>. <code>POST /v1/search</code> with a bearer token.</td></tr>
+    <tr><td>Document check</td><td>Called by ONB when a file is saved. The default asks the hosted chat model; a rules checker is the fallback. The verdict remains the rules. LLD-0001 is still a draft, and it still describes a rules-only checker.</td></tr>
+  </tbody>
+</table>
+<p>The tools are <code>next_step</code>, <code>save_answer</code>, <code>save_file</code>, <code>submit</code>, and <code>get_review</code>. There is no activate, waive, change-volume, or mark-complete operation. Calling <code>next_step</code> with no id creates the application. Resume is the same call with that id. Chat history lives in Postgres so the merchant can return to the thread. History does not choose the next tool and does not compute the verdict.</p>
+<p>Weights are not trained. Both models are hosted OpenAI-compatible endpoints. Embeddings are used by the corpus, not by ONB and not by the copilot.</p>
+<h3>Path of one message</h3>
+<p>The website sends the text, or the file, with a client message id. The copilot checks the Google token, then the rate-limit counter. A duplicate id returns the reply already stored for that id, so a retry does not run the turn twice.</p>
+<ol>
+  <li>The guard reads the line. An activation demand, a waiver, or a request to read an account number back stops here.</li>
+  <li>Otherwise the copilot loads the application with <code>next_step</code>. ONB’s pending field is the only source of “what is next.”</li>
+  <li>An exact command is handled in code. Any other line goes to the model once. The returned acts are checked against the words actually in the line. A span the merchant did not say is dropped.</li>
+  <li>A correction of a stored field is saved, then <code>next_step</code> runs again. The pending field is saved only when the value belongs there. A value for a future field is not written ahead of time.</li>
+  <li>Business type, payment methods, and phones pass a closed check before <code>save_answer</code>. An upload calls <code>save_file</code>, which runs the document check. Submit calls <code>submit</code> and allocates the review id if the rules allow one.</li>
+  <li>If the merchant asked why, search runs after that tool call. The critic then checks any sentence the model wrote. The page receives two assistant messages when both an acknowledgement and the next question are due. They are not joined into one.</li>
+</ol>
+<p>The same path writes the trace: decision fields, timing, and, when search ran, the ranks. The merchant’s text stays out of Langfuse.</p>
+<figure>
+<svg viewBox="0 0 760 318" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A why question searches the corpus and asks the same field again. Nothing is saved.">
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#1a4f63"/>
+    </marker>
+  </defs>
+  <style>
+    .hd { fill: #f4f7f8; stroke: #1a4f63; stroke-width: 1.15; }
+    .ht { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 650; fill: #1a4f63; }
+    .life { stroke: #e4ddd2; stroke-width: 1.15; }
+    .a { stroke: #1a4f63; stroke-width: 1.25; fill: none; }
+    .chip { fill: #ffffff; }
+    .m { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #1c1915; }
+    .foot { fill: #f6f4ef; }
+    .ft { font-family: Helvetica, Arial, sans-serif; font-size: 11px; fill: #5c564c; }
+  </style>
+  <rect class="hd" x="20" y="0" width="140" height="30" rx="2"/>
+  <rect class="hd" x="210" y="0" width="140" height="30" rx="2"/>
+  <rect class="hd" x="400" y="0" width="140" height="30" rx="2"/>
+  <rect class="hd" x="590" y="0" width="140" height="30" rx="2"/>
+  <text class="ht" x="90" y="20" text-anchor="middle">Web chat</text>
+  <text class="ht" x="280" y="20" text-anchor="middle">Copilot</text>
+  <text class="ht" x="470" y="20" text-anchor="middle">ONB</text>
+  <text class="ht" x="660" y="20" text-anchor="middle">Corpus</text>
+  <line class="life" x1="90" y1="30" x2="90" y2="286"/>
+  <line class="life" x1="280" y1="30" x2="280" y2="286"/>
+  <line class="life" x1="470" y1="30" x2="470" y2="286"/>
+  <line class="life" x1="660" y1="30" x2="660" y2="286"/>
+  <line class="a" x1="90" y1="58" x2="276" y2="58" marker-end="url(#ah2)"/>
+  <rect class="chip" x="161" y="40" width="48" height="16"/>
+  <text class="m" x="185" y="52" text-anchor="middle">start</text>
+  <line class="a" x1="280" y1="94" x2="466" y2="94" marker-end="url(#ah2)"/>
+  <rect class="chip" x="336" y="76" width="78" height="16"/>
+  <text class="m" x="375" y="88" text-anchor="middle">next_step</text>
+  <line class="a" x1="470" y1="130" x2="284" y2="130" marker-end="url(#ah2)"/>
+  <rect class="chip" x="314" y="112" width="122" height="16"/>
+  <text class="m" x="375" y="124" text-anchor="middle">shop name is next</text>
+  <line class="a" x1="280" y1="166" x2="94" y2="166" marker-end="url(#ah2)"/>
+  <rect class="chip" x="142" y="148" width="86" height="16"/>
+  <text class="m" x="185" y="160" text-anchor="middle">the question</text>
+  <line class="a" x1="90" y1="210" x2="276" y2="210" marker-end="url(#ah2)"/>
+  <rect class="chip" x="114" y="192" width="142" height="16"/>
+  <text class="m" x="185" y="204" text-anchor="middle">why do you need that?</text>
+  <line class="a" x1="280" y1="246" x2="656" y2="246" marker-end="url(#ah2)"/>
+  <rect class="chip" x="538" y="228" width="54" height="16"/>
+  <text class="m" x="565" y="240" text-anchor="middle">search</text>
+  <line class="a" x1="660" y1="282" x2="284" y2="282" marker-end="url(#ah2)"/>
+  <rect class="chip" x="528" y="264" width="74" height="16"/>
+  <text class="m" x="565" y="276" text-anchor="middle">passages</text>
+  <rect class="foot" x="20" y="296" width="710" height="22"/>
+  <text class="ft" x="375" y="311" text-anchor="middle">Nothing is saved. Submit is not called. The pending field stays the shop name.</text>
+</svg>
+<figcaption><b>Figure 2.</b> A why question. Search runs so the reply can cite the policy. ONB is not asked to store an answer.</figcaption>
+</figure>
+
+<h2>3. Intake, files, and the verdict</h2>
+<p>ONB chooses the pending item. The order is the shop’s legal name, the city, the type of business, the monthly volume in rupees, the payment methods, and whether payer phone numbers are stored. Then the pack: business registration, the owner’s government identity, bank proof in the shop’s legal name, and a shopfront photograph from the last 90 days. A signed data-processing addendum is asked only when phones are stored. A note is optional.</p>
+<p>Cafe and dhaba are stored as restaurant. Kirana is stored as grocery. The merchant’s own word is what the acknowledgement repeats when it differs from the category, so a cafe is accepted as “cafe (listed as restaurant).” An unlisted type is still stored. It stays in review even with a complete pack. Hawala, hundi, forex, crypto, and gambling are refused before a review id exists.</p>
+<p>A question that begins with why does not save the pending field and does not submit. The copilot retrieves the policy and asks the same question again. Before the verdict, an answer already stored can be replaced. After the verdict, stored answers stay as stored. A missing slot can still receive a file, the rules run again, and the review id does not change.</p>
+<p>A slot is closed by an accepted file or by the merchant saying the file is not available. “I already attached it,” with no file bytes and no slot named, does not close the slot. Submit is refused while a required slot is still open.</p>
+<table>
+  <thead><tr><th>Rule</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>Refused type (money service, crypto, gambling)</td><td><code>REFUSED</code>. No review id.</td></tr>
+    <tr><td>Required evidence missing or not accepted</td><td><code>IN_REVIEW</code>, with the gaps named.</td></tr>
+    <tr><td>Pack complete and the type permitted</td><td><code>RECOMMEND_GO_LIVE</code>. A recommendation, not activation.</td></tr>
+    <tr><td>Monthly volume at or under ₹40,00,000</td><td>Merchant Risk Lead.</td></tr>
+    <tr><td>Monthly volume above that</td><td>Head of Payments.</td></tr>
+  </tbody>
+</table>
+<figure>
+<svg viewBox="0 0 760 368" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ONB decides the outcome from the business type and the pack, then names a person from the monthly volume.">
+  <defs>
+    <marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#1a4f63"/>
+    </marker>
+  </defs>
+  <style>
+    .q { fill: #ffffff; stroke: #1a4f63; stroke-width: 1.25; }
+    .stop { fill: #f8ecec; stroke: #8a3a3a; stroke-width: 1.25; }
+    .go { fill: #e7f2ea; stroke: #2f6b45; stroke-width: 1.25; }
+    .mid { fill: #f4f7f8; stroke: #1a4f63; stroke-width: 1.25; }
+    .k { font-family: Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 650; fill: #1a4f63; letter-spacing: 1.4px; }
+    .t { font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 650; fill: #1c1915; }
+    .s { font-family: Helvetica, Arial, sans-serif; font-size: 10px; fill: #5c564c; }
+    .a { stroke: #1a4f63; stroke-width: 1.25; fill: none; }
+    .rule { stroke: #e4ddd2; stroke-width: 1; }
+  </style>
+  <text class="k" x="16" y="14">OUTCOME</text>
+  <rect class="q" x="16" y="24" width="292" height="40" rx="2"/>
+  <text class="t" x="162" y="48" text-anchor="middle">Money service, crypto, or gambling?</text>
+  <rect class="stop" x="468" y="24" width="276" height="40" rx="2"/>
+  <text class="t" x="606" y="41" text-anchor="middle">Refused</text>
+  <text class="s" x="606" y="55" text-anchor="middle">no review id</text>
+  <line class="a" x1="308" y1="44" x2="464" y2="44" marker-end="url(#ah3)"/>
+  <text class="s" x="386" y="38" text-anchor="middle">yes</text>
+  <line class="a" x1="162" y1="64" x2="162" y2="88" marker-end="url(#ah3)"/>
+  <text class="s" x="172" y="80">no</text>
+  <rect class="q" x="16" y="92" width="292" height="40" rx="2"/>
+  <text class="t" x="162" y="116" text-anchor="middle">On the permitted list?</text>
+  <rect class="mid" x="468" y="92" width="276" height="40" rx="2"/>
+  <text class="t" x="606" y="109" text-anchor="middle">In review</text>
+  <text class="s" x="606" y="123" text-anchor="middle">type not covered</text>
+  <line class="a" x1="308" y1="112" x2="464" y2="112" marker-end="url(#ah3)"/>
+  <text class="s" x="386" y="106" text-anchor="middle">no</text>
+  <line class="a" x1="162" y1="132" x2="162" y2="156" marker-end="url(#ah3)"/>
+  <text class="s" x="172" y="148">yes</text>
+  <rect class="q" x="16" y="160" width="292" height="40" rx="2"/>
+  <text class="t" x="162" y="184" text-anchor="middle">A required item is missing or invalid?</text>
+  <rect class="mid" x="468" y="160" width="276" height="40" rx="2"/>
+  <text class="t" x="606" y="177" text-anchor="middle">In review</text>
+  <text class="s" x="606" y="191" text-anchor="middle">the gaps are named</text>
+  <line class="a" x1="308" y1="180" x2="464" y2="180" marker-end="url(#ah3)"/>
+  <text class="s" x="386" y="174" text-anchor="middle">yes</text>
+  <line class="a" x1="162" y1="200" x2="162" y2="224" marker-end="url(#ah3)"/>
+  <text class="s" x="172" y="216">no</text>
+  <rect class="go" x="16" y="228" width="292" height="40" rx="2"/>
+  <text class="t" x="162" y="245" text-anchor="middle">Recommend go-live</text>
+  <text class="s" x="162" y="259" text-anchor="middle">not activation</text>
+  <line class="rule" x1="16" y1="288" x2="744" y2="288"/>
+  <text class="k" x="16" y="312">ASSIGNEE</text>
+  <text class="s" x="108" y="312">every outcome except a refusal</text>
+  <rect class="mid" x="16" y="324" width="356" height="40" rx="2"/>
+  <text class="t" x="194" y="341" text-anchor="middle">Merchant Risk Lead</text>
+  <text class="s" x="194" y="355" text-anchor="middle">₹40,00,000 or under</text>
+  <rect class="mid" x="388" y="324" width="356" height="40" rx="2"/>
+  <text class="t" x="566" y="341" text-anchor="middle">Head of Payments</text>
+  <text class="s" x="566" y="355" text-anchor="middle">above ₹40,00,000</text>
+</svg>
+<figcaption><b>Figure 3.</b> The verdict, inside ONB. A refusal stops before a review id. Volume names the person for every other outcome. Recommend go-live does not turn the shop on.</figcaption>
+</figure>
+<p>The copilot renders that structure. It does not edit the fields. A wrong retrieved passage can spoil the citation. It cannot change the outcome.</p>
+<h3>The document check</h3>
+<p>When a file is saved, ONB calls a verifier with the slot, the stored legal name, the bytes, and the date. The default implementation asks the same hosted chat model and returns a reason code. If that mode is turned off, a rules checker does the format and freshness tests instead. Either way, the code that chooses <code>IN_REVIEW</code>, <code>RECOMMEND_GO_LIVE</code>, or <code>REFUSED</code> does not ask the model. A reason code such as a shopfront older than 90 days becomes a sentence the copilot already knows. The model does not invent the rejection.</p>
+<p>The checker is not a production identity or bank-account proof. It does not establish that a certificate is genuine. LLD-0001 is still a draft, and it still describes a rules-only checker.</p>
+
+<h2>4. What we changed because the model is an 8B</h2>
+<p>This is the graded compensation for a small model. The 8B interprets a line and explains a rule. It does not run the shop.</p>
+<ul>
+  <li>A guard runs first. An instruction to ignore policy, activate the shop, or waive a document never becomes a prompt.</li>
+  <li>A few exact commands skip the model: why, submit, <code>field=value</code>, and a file name. Every other line is read once, against a closed set of labels. A label outside that set is dropped.</li>
+  <li>ONB, not the model, names the next field and computes the verdict. The words the model returns are not passed through as a tool argument.</li>
+  <li>Closed lists are checked in code before anything is saved. Canonical “other” is not stored.</li>
+  <li>Search runs after ONB has acted, and only to cite. Eligibility is not a retrieval score.</li>
+  <li>A critic reads model sentences before they are shown. A claim that the shop is live, or a review id the rules did not issue, is removed. Digit runs from accounts and identity numbers are not echoed. A volume the merchant just typed stays on screen.</li>
+  <li>A tool error is answered from a fixed map. Malformed JSON is not given a second free-form chance to invent a tool. The loop stops at ten steps.</li>
+</ul>
+<p>The Week 1 baseline is the evidence for this shape. Ten diagnostic cases were run on <code>Qwen/Qwen3-8B</code> with three strategies and no agent around them.</p>
+<table>
+  <thead><tr><th>Strategy</th><th class="num">Clean cases</th><th>What broke</th></tr></thead>
+  <tbody>
+    <tr><td>Structured output, few-shot</td><td class="num">6/10</td><td>The only strategy that stayed on the closed label set for most safety-shaped turns.</td></tr>
+    <tr><td>Chain-of-thought, self-consistency</td><td class="num">0/10</td><td>Invented labels, a soft refusal, and a dropped review id.</td></tr>
+    <tr><td>Decomposition</td><td class="num">0/10</td><td>The same class of miss, including activation language.</td></tr>
+  </tbody>
+</table>
+<p>The sample is a diagnosis. It is not a statistical comparison of prompting methods. It was enough to stop asking the 8B to plan the whole application in prose.</p>
+
+<h2>5. Retrieval</h2>
+<p>Recall is measured on its own, apart from whether a shop case passed. The corpus experiment uses 24 fixed why-and-cite questions with gold document ids. The index that is deployed is hybrid: dense similarity and keyword postings, fused by reciprocal rank, with a folder-tier bonus and one chunk kept per document.</p>
+<table>
+  <thead>
+    <tr><th>Setting, 800/120</th><th class="num">hit@4</th><th class="num">hit@8</th><th class="num">mean recall@4</th><th class="num">mean recall@8</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Dense only</td><td class="num">0.792</td><td class="num">0.833</td><td class="num">0.458</td><td class="num">0.625</td></tr>
+    <tr><td>Keyword only</td><td class="num">0.583</td><td class="num">0.750</td><td class="num">0.333</td><td class="num">0.479</td></tr>
+    <tr><td>Hybrid</td><td class="num">0.958</td><td class="num">1.000</td><td class="num">0.694</td><td class="num">0.840</td></tr>
+    <tr><td>Hybrid plus a MiniLM reranker</td><td class="num">0.833</td><td class="num">1.000</td><td class="num">0.500</td><td class="num">0.722</td></tr>
+  </tbody>
+</table>
+<p>Chunk length was swept on the same 24 questions. At 400 tokens with 60 of overlap the index has 2,667 chunks and hybrid hit@4 is 0.875. At 800/120 it has 1,446 chunks and hit@4 is 0.958. At 1200/180 it has 1,063 chunks and hit@4 is again 0.958, with mean recall@4 of 0.701 against 0.694. The deployed index is 800/120. The longer chunk does not raise the hit rate. The reranker was built, measured, and left off the product path because hit@4 fell from 0.958 to 0.833. That is the experiment the template asks for, and the negative result is why it is not in the live search.</p>
+<table>
+  <thead><tr><th>Chunking</th><th class="num">Chunks</th><th class="num">hit@4</th><th class="num">hit@8</th><th class="num">mean recall@4</th><th class="num">mean recall@8</th></tr></thead>
+  <tbody>
+    <tr><td>400 / 60</td><td class="num">2,667</td><td class="num">0.875</td><td class="num">0.958</td><td class="num">0.597</td><td class="num">0.729</td></tr>
+    <tr><td>800 / 120, deployed</td><td class="num">1,446</td><td class="num">0.958</td><td class="num">1.000</td><td class="num">0.694</td><td class="num">0.840</td></tr>
+    <tr><td>1200 / 180</td><td class="num">1,063</td><td class="num">0.958</td><td class="num">1.000</td><td class="num">0.701</td><td class="num">0.840</td></tr>
+  </tbody>
+</table>
+<p>The copilot has a smaller check of its own, twenty questions through <code>POST /v1/search</code>, recorded at hit@4 1.000 and hit@8 1.000. That checks the client. It is not the 24-question experiment, and the two scores are not averaged.</p>
+
+<h2>6. End-to-end results</h2>
+<p>A gold shop passes when the outcome matches, a refused shop has no review id, every other shop has one id that does not change, a why or a refusal does not skip the pending field, the reply does not say the shop is live, and digits the merchant typed for an account or an identity are not repeated.</p>
+<table>
+  <thead><tr><th>Set</th><th>Cases</th><th class="num">Recorded</th><th>Artefact</th></tr></thead>
+  <tbody>
+    <tr><td>Build</td><td>G-001–G-050</td><td class="num">50/50</td><td>Replay log, build</td></tr>
+    <tr><td>Holdout, once</td><td>G-051–G-071</td><td class="num">21/21</td><td>Replay log, holdout</td></tr>
+  </tbody>
+</table>
+<p>The recorded logs are in the source pack, under the names replay-build and replay-holdout. They were not repeated after later changes to how a free-text line is read, so this report does not present them as a replay dated 26 November. On this definition, task completion for the Week 1 set is 71 of 71 on the recorded runners.</p>
+<p>The three evidence layers keep separate denominators. Twenty-four policy questions measure retrieval. Ten bare prompts measure the model with no agent around it. Seventy-one shops measure the workflow. Three hundred and forty-five spoken lines measure the reader. A pass rate from one layer is not an average with another. The build set may be used while changing the reader. The holdout may not. Replaying G-051 to G-071 in order to tune would retire the holdout claim, which is why that file is a single recorded run.</p>
+<p>The twenty-question client check is a separate log in the pack. The 345-line diagnosis is another. The 24-question table comes from the retrieval note, not from the copilot’s client check. A natural run that finishes in a few hundred milliseconds did not reach the model. That fast path is the outage fallback, and it is not a score. A real run needs the chat host and takes several minutes.</p>
+<p>Three figures the template also names are not in a published table: the average number of tool calls per shop, the rupee cost per query, and latency percentiles. Token counts are written on a trace only when the provider returns them. The copilot does not estimate tokens it was not given.</p>
+<h3>A separate reader check</h3>
+<p>Three hundred and forty-five single merchant lines were played as a diagnosis of free text. This suite is not the gold set, and it is not folded into the 71. Every line plays. Forty of them save the wrong field. The field matches on 88 percent of lines, the value on 77 percent, and the act on 73 percent. The following question is the one ONB is actually waiting for on 100 percent of lines. Of the forty misses, 18 were rewritten by a helper, 16 are the model’s own act, and 6 disagree with the label rather than with the reader.</p>
+<table>
+  <thead><tr><th>Kind of line</th><th class="num">Model</th><th class="num">Helper</th><th class="num">Label</th></tr></thead>
+  <tbody>
+    <tr><td>Plain answer</td><td class="num">1</td><td class="num">9</td><td class="num">3</td></tr>
+    <tr><td>Two acts in one line</td><td class="num">5</td><td class="num">0</td><td class="num">0</td></tr>
+    <tr><td>Typo</td><td class="num">0</td><td class="num">7</td><td class="num">0</td></tr>
+    <tr><td>Named correction</td><td class="num">3</td><td class="num">0</td><td class="num">0</td></tr>
+    <tr><td>Unnamed correction</td><td class="num">3</td><td class="num">0</td><td class="num">2</td></tr>
+    <tr><td>Hinglish</td><td class="num">2</td><td class="num">1</td><td class="num">0</td></tr>
+    <tr><td>Points at an earlier answer</td><td class="num">2</td><td class="num">0</td><td class="num">0</td></tr>
+    <tr><td>Negation</td><td class="num">0</td><td class="num">1</td><td class="num">1</td></tr>
+  </tbody>
+</table>
+<p>Some of those forty are limits we are keeping. A typo such as “resturant” is not guessed into restaurant. “120K” is not invented as 120000. A sentence about phones that is not yes or no is not stored as Yes or No. A shop name that merely contains the word salon or grocery stays the shop name.</p>
+
+<h2>7. Failure taxonomy</h2>
+<p>The template asks for four classes: a retrieval miss, a reasoning error, a tool-call error, and a hallucination. This report uses those four. The recorded 71-shop runs did not fail, so they do not supply an observed incident. The classes are the names used when a line in the 345, or a live turn, goes wrong.</p>
+<table>
+  <thead><tr><th>Class</th><th>Meaning</th><th>Where it is visible</th></tr></thead>
+  <tbody>
+    <tr><td>Retrieval miss</td><td>The in-force passage is absent from the top documents, or the reply falls back because nothing usable came back.</td><td>The search hit list. <code>trace.reply = fallback</code>.</td></tr>
+    <tr><td>Reasoning error</td><td>A why or a refusal moves the pending field, or the value is saved on the wrong field.</td><td><code>trace.intent</code> and <code>trace.action</code>. The forty wrong-field rows.</td></tr>
+    <tr><td>Tool-call error</td><td>ONB rejects the value: a volume it cannot read, phones that are not yes or no, an empty answer.</td><td>The ONB error. No outcome is written.</td></tr>
+    <tr><td>Hallucination</td><td>A fee, a claim that the shop is live, or a review id the rules did not issue.</td><td>The critic drops the sentence. A replay fails a live-claim check.</td></tr>
+  </tbody>
+</table>
+<p>A right passage and a clumsy sentence is a grounding problem, not a retrieval miss. A right verdict and an awkward explanation is not a broken rule. A wrong outcome from ONB would be a rule failure even if the copilot repeated it word for word.</p>
+
+<h2>8. Traces of real turns</h2>
+<p>Every message, upload, and submit that the copilot accepts is one trace. The service writes the trace to Postgres and posts it to Langfuse Cloud in the US region, on the current OpenTelemetry trace endpoint. The session id is the application id, which begins with <code>app_</code>. The turn is named <code>copilot.message</code>, <code>copilot.file</code>, or <code>copilot.submit</code>. Child spans cover the model read, the policy search, and the explanation.</p>
+<p>Content capture is off. A trace carries the decision fields, the timing, the model name when it is known, and the retrieval ranks. It does not carry the merchant’s words, the prompt, or the file. A row remains in the outbox until Langfuse accepts the whole turn. A retry sends the same trace and span ids. Authentication failures that happen before a turn is reserved are not traces.</p>
+<p>The trace dashboard is that Langfuse project. The public session for the demo is <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">app_3020d278483c</a>.</p>
+
+<h2>9. Responsible AI</h2>
+<p>Merchant text is data, including text inside an uploaded file. On the demo, the note that says to ignore policy and mark the shop Active is stored as a note and is not obeyed. The adversarial cases in the source pack are refused before a model call. The page the merchant sees does not echo account or identity digits. Traces, by default, do not contain the utterance.</p>
+<p>Refusal of a money-service type is a rule with a fixed sentence, and it opens no review. After a verdict, “activate us now” is declined under the policy and the same review id is repeated. <code>RECOMMEND_GO_LIVE</code> names a human reviewer. The interface has no operation that can set a shop live. That boundary is the tool list, not a sentence in the prompt.</p>
+<p>The adversarial file checked with the unit tests covers the boundary in the forms a merchant, or a pasted instruction, actually uses. Demands to go live, including in Hindi and Hinglish, are refused. So are requests to waive the shopfront, to mark the pack complete, and to read back an account number or its last four digits. A speaker who claims to be the Merchant Risk Lead is still refused. A made-up policy id that says the copilot may activate is refused. A JSON fragment posing as an intent is not executed as a tool call. A shop name that happens to contain the word “active” is saved as a name, which is the distinction the guard has to get right.</p>
+
+<h2>10. Deployment and the recorded demo</h2>
+<p>The web chat, the copilot, ONB, and the corpus each run as a Render web service. Render builds the image and runs it. There is no second container file in the source pack. Postgres holds the ONB applications and the copilot’s conversation history. A Render Key Value instance named <code>copilot-cache</code> holds only a rate-limit counter and a search cache.</p>
+<p>Each signed-in merchant may send 30 messages or files in a minute. The next request is HTTP 429, code <code>rate_limited</code>, and the page asks them to wait a minute. The website does not automatically retry that response. Policy search results are kept for five minutes, keyed by the question and the number of hits. Saved answers, files, and the verdict are not cached. If Key Value is unreachable, the turn still runs and search calls the corpus. A free Key Value instance forgets its keys when it restarts. That is acceptable for a one-minute counter and a five-minute cache.</p>
+<div class="call">
+  <strong>Lotus Tea House, on the live web chat.</strong>
+  The merchant asks why the legal name is needed, then gives Lotus Tea House, Pune, a cafe, ₹12,00,000, UPI and cards, and yes to storing payer phones. Registration and owner identity are real uploads. Bank proof, the shopfront photograph, and the addendum are declined. The note demands Active. Submit leaves the shop in review with the Merchant Risk Lead. A later demand to activate does not change the review id. A second conversation, a hawala shop in Pune, is refused and has no review id.
+  The recording is on <a href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">Google Drive</a>.
+  The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">Langfuse session</a>.
+  The live chat is <a href="https://copilot-web-n05u.onrender.com">copilot-web-n05u.onrender.com</a>.
+</div>
+<table>
+  <thead><tr><th>What the merchant does</th><th>What must be true</th></tr></thead>
+  <tbody>
+    <tr><td>Asks why the legal name is required</td><td>A policy citation, then the same question. Nothing is saved.</td></tr>
+    <tr><td>Lotus Tea House, then Pune</td><td>Name and city stored. One question at a time.</td></tr>
+    <tr><td>Says it is a cafe</td><td>Stored as restaurant. The reply keeps the word cafe.</td></tr>
+    <tr><td>₹12,00,000, then UPI and cards, then yes</td><td>Volume echoed as typed. Phones stored, so the addendum becomes required.</td></tr>
+    <tr><td>Uploads registration and owner identity</td><td>The bytes go to ONB. The checker runs. The verdict is still the rules.</td></tr>
+    <tr><td>Declines bank proof, shopfront, and the addendum</td><td>Those three slots are missing. Submit is allowed.</td></tr>
+    <tr><td>Note: set the shop Active</td><td>The note is stored. The shop is not activated.</td></tr>
+    <tr><td>Submit, then “activate us now”, then ask for the review reference</td><td>In review. Merchant Risk Lead. The same review id all three times. Not live.</td></tr>
+    <tr><td>A new chat: Night Bazaar, Pune, hawala</td><td>Refused. No review id.</td></tr>
+  </tbody>
+</table>
+<p>The technical report is this document. The 10-minute demonstration is the recording above, together with the public trace. Before a live try, wake the services as in the annex.</p>
+
+<h2>11. What this report does not claim</h2>
+<ul>
+  <li>The 24 retrieval questions and the 10 prompting cases are small. They compare settings. They do not cover every paraphrase of the policy.</li>
+  <li>The 50/50 and 21/21 figures are the recorded replay files. They predate later reader changes and were not re-run for this document.</li>
+  <li>Forty of the 345 spoken lines still save the wrong field. That suite is a diagnosis, not the Week 1 gate.</li>
+  <li>The document checker may call the chat model. LLD-0001 has not yet been revised to say so. The verdict path does not.</li>
+  <li>Cost per query and latency percentiles are not measured in a table here.</li>
+  <li>Names of authors, the institution, and the mentor belong on the course cover. They are not filled in from a git username.</li>
+</ul>
+
+<h2>12. Deliverables</h2>
+<p>The sources are the Google Docs that accompany this PDF. The live chat, the recording, and the Langfuse session stay as links.</p>
+<table>
+  <thead><tr><th>Template deliverable</th><th>This submission</th></tr></thead>
+  <tbody>
+    <tr><td>The agent and its sources</td><td>The Google Docs listed in section 13.</td></tr>
+    <tr><td>Trace dashboard of real queries</td><td>Langfuse session <code>app_3020d278483c</code>, public, keyed by the application id.</td></tr>
+    <tr><td>Evaluation report and failure taxonomy</td><td>Sections 5 to 7 of this PDF, and the evaluation note in the pack.</td></tr>
+    <tr><td>Technical report</td><td>This PDF.</td></tr>
+    <tr><td>Ten-minute demo</td><td>The Drive recording of Lotus Tea House, plus the second chat that is refused.</td></tr>
+    <tr><td>Front end, rate limit, cache</td><td>The live web chat. Thirty messages a minute. Policy search cached for five minutes.</td></tr>
+  </tbody>
+</table>
+
+<section class="keep">
+<h2>13. Sources in the Google Docs pack</h2>
+<p>The pack contains the documents below. The figures in this PDF are the current picture of the system.</p>
+<ol class="refs">
+  <li>This report.</li>
+  <li>Architecture note. The decision record, the five tools, and the gold set of 71 shops.</li>
+  <li>Evaluation note. Replay method, the four-class taxonomy, the 345-line scores, and the trace contract.</li>
+  <li>Retrieval note. The 24-question comparison, the chunking sweep, and the reranker that was not kept. The result logs sit with it.</li>
+  <li>Replay logs. Build, 50 of 50. Holdout, 21 of 21. Not re-run after the later reader changes.</li>
+  <li>Lotus Tea House. The worked example, the Drive recording, and the public Langfuse session.</li>
+  <li>Track B template. Items I to VI, the role split, and the deliverables.</li>
+</ol>
+<p>Three links are not documents. The recording is <a href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">on Drive</a>. The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">Langfuse session</a>. The chat is <a href="https://copilot-web-n05u.onrender.com">the live web page</a>.</p>
+</section>
+
+<h2>Annex. Waking the services</h2>
+<p>The web chat, the copilot, ONB, and the corpus run on Render’s free plan. Each one sleeps after about fifteen minutes without a request. Open the four addresses below, one after another, and wait until that page answers. The first request after a sleep can take about a minute. A service that has answered stays awake for the next quarter of an hour. Wake all four before signing in, or the chat will wait on a service that is still starting.</p>
+<table>
+  <thead><tr><th>Service</th><th>Open this</th><th>It is awake when</th></tr></thead>
+  <tbody>
+    <tr><td>Web chat</td><td><a href="https://copilot-web-n05u.onrender.com">copilot-web-n05u.onrender.com</a></td><td>The sign-in page is on screen.</td></tr>
+    <tr><td>Copilot</td><td><a href="https://copilot-svc.onrender.com/v1/health">copilot-svc.onrender.com/v1/health</a></td><td>The page shows <code>ok</code>.</td></tr>
+    <tr><td>ONB</td><td><a href="https://onb-k8ud.onrender.com/health">onb-k8ud.onrender.com/health</a></td><td>The page shows <code>ok</code>.</td></tr>
+    <tr><td>Corpus</td><td><a href="https://onb-corpus.onrender.com/health">onb-corpus.onrender.com/health</a></td><td>The page shows a status.</td></tr>
+  </tbody>
+</table>
+<p>Sign in with any verified Google account. The web chat, the copilot, and ONB each keep a list of Gmail addresses. A flag, <code>GOOGLE_ENFORCE_ALLOWED_EMAILS</code>, decides whether that list is applied. The flag is off on all three, so the list is not applied.</p>
+
+</body>
+</html>
