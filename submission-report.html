@@ -80,7 +80,7 @@
 <h1>iPe Merchant Onboarding Copilot</h1>
 <p class="sub">A shop applies in one web chat. A hosted 8B model asks, explains, and cites. A deterministic service decides, and a person at iPe is the only one who can turn the shop on.</p>
 <p class="meta">26 November 2026 · Capstone-iPe<br />
-This PDF is the technical report. The folders that go with it on Google Drive are <code>iPe</code>, <code>copilot-svc</code>, <code>onb-svc</code>, <code>copilot-web-app</code>, <code>ipe-corpus</code>, and <code>Reports</code>.</p>
+This PDF is the technical report. The sources are in <a href="https://drive.google.com/drive/folders/1ksPV2CvCloPCJ-qgT8tPG11x2VomNxpj">iPe Merchant Onboarding Copilot</a> on Google Drive.</p>
 
 <h2>1. The problem</h2>
 <p>Merchant onboarding needs a legal name, a place, a type of shop, a monthly volume, the payment methods, a yes or no on storing payer phone numbers, and a small pack of documents. The applicant also needs to understand why a document is required, and to be told plainly what is still missing. A chat can do that. A generative model must not become the source of truth for the outcome.</p>
@@ -460,15 +460,16 @@ This PDF is the technical report. The folders that go with it on Google Drive ar
 
 <section class="keep">
 <h2>13. Folders on Google Drive</h2>
+<p>The parent folder is <a href="https://drive.google.com/drive/folders/1ksPV2CvCloPCJ-qgT8tPG11x2VomNxpj">iPe Merchant Onboarding Copilot</a>. Download it and run <code>unpack.py</code> there. That restores each project. The assignment folders are not in it.</p>
 <table>
   <thead><tr><th>Folder</th><th>What this report uses from it</th></tr></thead>
   <tbody>
-    <tr><td><code>iPe</code></td><td><code>ADR-0001-architecture.md</code>, <code>eval/cases</code>, <code>docs/LLD-0001-document-verifier.md</code>, <code>docs/LLD-0002-web-chat-contract.md</code>, <code>prompting-baseline/</code>.</td></tr>
-    <tr><td><code>copilot-svc</code></td><td><code>docs/eval.md</code>, <code>docs/results/replay-build.txt</code>, <code>docs/results/replay-holdout.txt</code>, <code>docs/results/retrieval.txt</code>, <code>docs/results/natural-wrong-field.jsonl</code>, <code>replay/natural/turns.jsonl</code>, <code>tests/adversarial.txt</code>.</td></tr>
-    <tr><td><code>onb-svc</code></td><td>The service that owns the application, the files, and the verdict.</td></tr>
-    <tr><td><code>copilot-web-app</code></td><td>The web chat.</td></tr>
-    <tr><td><code>ipe-corpus</code></td><td><code>eval/retrieval.md</code> and the policy documents.</td></tr>
-    <tr><td><code>Reports</code></td><td>This PDF and <code>lotus-tea-house.md</code>.</td></tr>
+    <tr><td><a href="https://drive.google.com/drive/folders/1-fsbnUfRp9vfgO7_TWgRu5ApdkExjGl7"><code>iPe</code></a></td><td><code>ADR-0001-architecture.md</code>, <code>eval/cases</code>, <code>docs/LLD-0001-document-verifier.md</code>, <code>docs/LLD-0002-web-chat-contract.md</code>, <code>prompting-baseline/</code>.</td></tr>
+    <tr><td><a href="https://drive.google.com/drive/folders/1we8HHtkDjV50qcIj6qQRiOUJmhXWyvn_"><code>copilot-svc</code></a></td><td><code>docs/eval.md</code>, <code>docs/results/replay-build.txt</code>, <code>docs/results/replay-holdout.txt</code>, <code>docs/results/retrieval.txt</code>, <code>docs/results/natural-wrong-field.jsonl</code>, <code>replay/natural/turns.jsonl</code>, <code>tests/adversarial.txt</code>.</td></tr>
+    <tr><td><a href="https://drive.google.com/drive/folders/13C7GZNaZAYxi279vtF70uy2zCJZxN97V"><code>onb-svc</code></a></td><td>The service that owns the application, the files, and the verdict.</td></tr>
+    <tr><td><a href="https://drive.google.com/drive/folders/1ut5AyOuMYohsg5UtDG2kndsRJ-S11uxN"><code>copilot-web-app</code></a></td><td>The web chat.</td></tr>
+    <tr><td><a href="https://drive.google.com/drive/folders/1g6UgHZcFeb9yJ84QRghrBDm3LLnuk_3M"><code>ipe-corpus</code></a></td><td><code>eval/retrieval.md</code> and the policy documents.</td></tr>
+    <tr><td><a href="https://drive.google.com/drive/folders/11wBsl9ySeyc9EgSMRYlkS9DogK4EewtU"><code>Reports</code></a></td><td>This PDF and <code>lotus-tea-house.md</code>.</td></tr>
   </tbody>
 </table>
 <p>These three are links, not files in the folders. The recording is <a href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">on Drive</a>. The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">Langfuse session</a>. The chat is <a href="https://copilot-web-n05u.onrender.com">the live web page</a>.</p>
