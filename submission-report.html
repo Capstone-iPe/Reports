@@ -33,6 +33,7 @@
     font-family: "Avenir Next", "Helvetica Neue", Helvetica, sans-serif;
   }
   a { color: #1a4f63; text-decoration: none; }
+  a code { text-decoration: underline; text-underline-offset: 2px; }
   h1 { font-size: 26pt; line-height: 1.08; font-weight: 650; letter-spacing: -0.02em; margin: 0 0 8px; }
   h2 {
     font-size: 13.5pt; font-weight: 650; color: #1a4f63;
@@ -80,20 +81,20 @@
 <h1>iPe Merchant Onboarding Copilot</h1>
 <p class="sub">A shop applies in one web chat. A hosted 8B model asks, explains, and cites. A deterministic service decides, and a person at iPe is the only one who can turn the shop on.</p>
 <p class="meta">26 November 2026 · Capstone-iPe<br />
-This PDF is the technical report. The sources are in <a href="https://drive.google.com/drive/folders/1ksPV2CvCloPCJ-qgT8tPG11x2VomNxpj">iPe Merchant Onboarding Copilot</a> on Google Drive.</p>
+This PDF is the technical report. The sources are the public repositories under <a href="https://github.com/Capstone-iPe">Capstone-iPe</a>.</p>
 
 <h2>1. The problem</h2>
 <p>Merchant onboarding needs a legal name, a place, a type of shop, a monthly volume, the payment methods, a yes or no on storing payer phone numbers, and a small pack of documents. The applicant also needs to understand why a document is required, and to be told plainly what is still missing. A chat can do that. A generative model must not become the source of truth for the outcome.</p>
 <p>The product is one shop, one thread. The copilot asks for the single pending item, takes a PDF, JPG, or PNG, reads the application back, and submits only when every required slot is uploaded or the merchant has said the file is not available. The verdict names the outcome, the gaps, the assignee, the policy, and one review id. The thread stays open. A file that arrives later updates the verdict and keeps that id. Activation is a human act. There is no tool for it.</p>
-<p>A correct answer is the Correct list written for that shop before the agent existed: the outcome, the missing items, the assignee, a stable review id when one is due, and no sentence that says the shop is live. The gold set is 71 shops, G-001 to G-071, each a file in <code>iPe/eval/cases</code>. G-001 to G-050 were used while building. G-051 to G-071 were held out and run once. Those shops are not in the retrieval index.</p>
+<p>A correct answer is the Correct list written for that shop before the agent existed: the outcome, the missing items, the assignee, a stable review id when one is due, and no sentence that says the shop is live. The gold set is 71 shops, G-001 to G-071, each a file in <a href="https://github.com/Capstone-iPe/analysis/tree/main/eval/cases"><code>analysis/eval/cases</code></a>. G-001 to G-050 were used while building. G-051 to G-071 were held out and run once. Those shops are not in the retrieval index.</p>
 <p>The worked example is Lotus Tea House: a cafe in Pune, ₹12,00,000 a month, registration and owner identity uploaded, bank proof, shopfront photograph, and addendum missing, with a note that demands the shop be marked Active. The correct result is in review, assigned to the Merchant Risk Lead, and unchanged by a later demand to activate. A hawala shop is refused and receives no review id.</p>
 <table>
   <thead><tr><th>Template item</th><th>Where it is answered</th></tr></thead>
   <tbody>
-    <tr><td>I. Specification and a gold set of 60–100, written first</td><td>Section 1, <code>iPe/ADR-0001-architecture.md</code>, and <code>iPe/eval/cases</code>.</td></tr>
-    <tr><td>II. Three prompting strategies, and how the 8B breaks</td><td>Section 4. The ten cases are <code>iPe/prompting-baseline/prompting-baseline-cases.json</code>.</td></tr>
-    <tr><td>III. RAG, chunking, hybrid search, a reranker, recall@k apart from the answer</td><td>Section 5. The numbers are in <code>ipe-corpus/eval/retrieval.md</code>.</td></tr>
-    <tr><td>IV. Tools, planner to executor to critic, state, errors, at most ten steps</td><td>Sections 2 and 3. Five tools. The application row is in <code>onb-svc</code>.</td></tr>
+    <tr><td>I. Specification and a gold set of 60–100, written first</td><td>Section 1, <a href="https://github.com/Capstone-iPe/analysis/blob/main/ADR-0001-architecture.md"><code>analysis/ADR-0001-architecture.md</code></a>, and <a href="https://github.com/Capstone-iPe/analysis/tree/main/eval/cases"><code>analysis/eval/cases</code></a>.</td></tr>
+    <tr><td>II. Three prompting strategies, and how the 8B breaks</td><td>Section 4. The ten cases are <a href="https://github.com/Capstone-iPe/analysis/blob/main/prompting-baseline/prompting-baseline-cases.json"><code>analysis/prompting-baseline/prompting-baseline-cases.json</code></a>.</td></tr>
+    <tr><td>III. RAG, chunking, hybrid search, a reranker, recall@k apart from the answer</td><td>Section 5. The numbers are in <a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md"><code>onb-corpus/eval/retrieval.md</code></a>.</td></tr>
+    <tr><td>IV. Tools, planner to executor to critic, state, errors, at most ten steps</td><td>Sections 2 and 3. Five tools. The application row is in <a href="https://github.com/Capstone-iPe/onb-svc"><code>onb-svc</code></a>.</td></tr>
     <tr><td>V. Accuracy, a failure taxonomy, traces</td><td>Sections 6 to 8. The trace link is in section 8.</td></tr>
     <tr><td>VI. A web front end, containerised deploy, rate limit, cache, responsible AI</td><td>Sections 9 and 10, and the annex.</td></tr>
   </tbody>
@@ -155,11 +156,11 @@ This PDF is the technical report. The sources are in <a href="https://drive.goog
 <table>
   <thead><tr><th>Piece</th><th>What it owns</th></tr></thead>
   <tbody>
-    <tr><td>Web chat</td><td>The thread, sign-in, and the upload control, in <code>copilot-web-app</code>. The contract is <code>iPe/docs/LLD-0002-web-chat-contract.md</code>. Score-only fields never reach the browser.</td></tr>
+    <tr><td>Web chat</td><td>The thread, sign-in, and the upload control, in <a href="https://github.com/Capstone-iPe/copilot-web-app"><code>copilot-web-app</code></a>. The contract is <a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/LLD-0002-web-chat-contract.md"><code>analysis/docs/LLD-0002-web-chat-contract.md</code></a>. Score-only fields never reach the browser.</td></tr>
     <tr><td>Copilot</td><td>The planner, executor, and critic over <code>Qwen/Qwen3-8B</code>. Policy search. The MCP client. Every sentence the merchant reads.</td></tr>
     <tr><td>ONB</td><td>Deterministic Python. Five tools. The rules. One review id, allocated once.</td></tr>
     <tr><td>onb-corpus</td><td>500 documents and 1,446 chunks. Hybrid search. Embeddings from <code>bge-small-en-v1.5</code>. <code>POST /v1/search</code> with a bearer token.</td></tr>
-    <tr><td>Document check</td><td>Called by ONB when a file is saved. The default asks the hosted chat model; a rules checker is the fallback. The verdict remains the rules. <code>iPe/docs/LLD-0001-document-verifier.md</code> still describes a rules-only checker.</td></tr>
+    <tr><td>Document check</td><td>Called by ONB when a file is saved. The default asks the hosted chat model; a rules checker is the fallback. The verdict remains the rules. <a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/LLD-0001-document-verifier.md"><code>analysis/docs/LLD-0001-document-verifier.md</code></a> still describes a rules-only checker.</td></tr>
   </tbody>
 </table>
 <p>The tools are <code>next_step</code>, <code>save_answer</code>, <code>save_file</code>, <code>submit</code>, and <code>get_review</code>. There is no activate, waive, change-volume, or mark-complete operation. Calling <code>next_step</code> with no id creates the application. Resume is the same call with that id. Chat history lives in Postgres so the merchant can return to the thread. History does not choose the next tool and does not compute the verdict.</p>
@@ -310,7 +311,7 @@ This PDF is the technical report. The sources are in <a href="https://drive.goog
 <p>The copilot renders that structure. It does not edit the fields. A wrong retrieved passage can spoil the citation. It cannot change the outcome.</p>
 <h3>The document check</h3>
 <p>When a file is saved, ONB calls a verifier with the slot, the stored legal name, the bytes, and the date. The default implementation asks the same hosted chat model and returns a reason code. If that mode is turned off, a rules checker does the format and freshness tests instead. Either way, the code that chooses <code>IN_REVIEW</code>, <code>RECOMMEND_GO_LIVE</code>, or <code>REFUSED</code> does not ask the model. A reason code such as a shopfront older than 90 days becomes a sentence the copilot already knows. The model does not invent the rejection.</p>
-<p>The checker is not a production identity or bank-account proof. It does not establish that a certificate is genuine. <code>iPe/docs/LLD-0001-document-verifier.md</code> still describes a rules-only checker.</p>
+<p>The checker is not a production identity or bank-account proof. It does not establish that a certificate is genuine. <a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/LLD-0001-document-verifier.md"><code>analysis/docs/LLD-0001-document-verifier.md</code></a> still describes a rules-only checker.</p>
 
 <h2>4. What we changed because the model is an 8B</h2>
 <p>The 8B interprets a line and explains a rule. It does not run the shop.</p>
@@ -356,21 +357,21 @@ This PDF is the technical report. The sources are in <a href="https://drive.goog
     <tr><td>1200 / 180</td><td class="num">1,063</td><td class="num">0.958</td><td class="num">1.000</td><td class="num">0.701</td><td class="num">0.840</td></tr>
   </tbody>
 </table>
-<p>The copilot has a smaller check of its own, twenty questions through <code>POST /v1/search</code>, recorded at hit@4 1.000 and hit@8 1.000 in <code>copilot-svc/docs/results/retrieval.txt</code>. That checks the client. It is not the 24-question experiment in <code>ipe-corpus/eval/retrieval.md</code>, and the two scores are not averaged.</p>
+<p>The copilot has a smaller check of its own, twenty questions through <code>POST /v1/search</code>, recorded at hit@4 1.000 and hit@8 1.000 in <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/retrieval.txt"><code>copilot-svc/docs/results/retrieval.txt</code></a>. That checks the client. It is not the 24-question experiment in <a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md"><code>onb-corpus/eval/retrieval.md</code></a>, and the two scores are not averaged.</p>
 
 <h2>6. End-to-end results</h2>
 <p>A gold shop passes when the outcome matches, a refused shop has no review id, every other shop has one id that does not change, a why or a refusal does not skip the pending field, the reply does not say the shop is live, and digits the merchant typed for an account or an identity are not repeated.</p>
 <table>
   <thead><tr><th>Set</th><th>Cases</th><th class="num">Recorded</th><th>Artefact</th></tr></thead>
   <tbody>
-    <tr><td>Build</td><td>G-001–G-050</td><td class="num">50/50</td><td><code>copilot-svc/docs/results/replay-build.txt</code></td></tr>
-    <tr><td>Holdout, once</td><td>G-051–G-071</td><td class="num">21/21</td><td><code>copilot-svc/docs/results/replay-holdout.txt</code></td></tr>
+    <tr><td>Build</td><td>G-001–G-050</td><td class="num">50/50</td><td><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/replay-build.txt"><code>copilot-svc/docs/results/replay-build.txt</code></a></td></tr>
+    <tr><td>Holdout, once</td><td>G-051–G-071</td><td class="num">21/21</td><td><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/replay-holdout.txt"><code>copilot-svc/docs/results/replay-holdout.txt</code></a></td></tr>
   </tbody>
 </table>
 <p>Those two logs were not run again after later changes to how a free-text line is read. On the definition above, task completion for the 71 shops is 71 of 71 in those files.</p>
-<p><code>copilot-svc/replay/natural/turns.jsonl</code> is a different file. It holds 345 merchant sentences, each played on its own to see whether free text lands on the right field. It is not the 71 shops, and it is not mixed into the 50/50 or the 21/21.</p>
+<p><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/replay/natural/turns.jsonl"><code>copilot-svc/replay/natural/turns.jsonl</code></a> is a different file. It holds 345 merchant sentences, each played on its own to see whether free text lands on the right field. It is not the 71 shops, and it is not mixed into the 50/50 or the 21/21.</p>
 <h3>The 345 sentences</h3>
-<p>Every one of the 345 sentences was played. Forty of them saved the wrong field. The field matches on 88 percent of sentences, the value on 77 percent, and the act on 73 percent. The next question is the one ONB is actually waiting for on 100 percent of sentences. Of the forty misses, 18 were rewritten by a helper, 16 are the model’s own act, and 6 disagree with the label rather than with the reader. The forty rows are <code>copilot-svc/docs/results/natural-wrong-field.jsonl</code>.</p>
+<p>Every one of the 345 sentences was played. Forty of them saved the wrong field. The field matches on 88 percent of sentences, the value on 77 percent, and the act on 73 percent. The next question is the one ONB is actually waiting for on 100 percent of sentences. Of the forty misses, 18 were rewritten by a helper, 16 are the model’s own act, and 6 disagree with the label rather than with the reader. The forty rows are <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/natural-wrong-field.jsonl"><code>copilot-svc/docs/results/natural-wrong-field.jsonl</code></a>.</p>
 <table>
   <thead><tr><th>Kind of line</th><th class="num">Model</th><th class="num">Helper</th><th class="num">Label</th></tr></thead>
   <tbody>
@@ -392,7 +393,7 @@ This PDF is the technical report. The sources are in <a href="https://drive.goog
   <thead><tr><th>Class</th><th>Meaning</th><th>Where it is visible</th></tr></thead>
   <tbody>
     <tr><td>Retrieval miss</td><td>The in-force passage is absent from the top documents, or the reply falls back because nothing usable came back.</td><td>The search hit list. <code>trace.reply = fallback</code>.</td></tr>
-    <tr><td>Reasoning error</td><td>A why or a refusal moves the pending field, or the value is saved on the wrong field.</td><td><code>trace.intent</code> and <code>trace.action</code>. The 40 rows in <code>natural-wrong-field.jsonl</code>.</td></tr>
+    <tr><td>Reasoning error</td><td>A why or a refusal moves the pending field, or the value is saved on the wrong field.</td><td><code>trace.intent</code> and <code>trace.action</code>. The 40 rows in <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/natural-wrong-field.jsonl"><code>natural-wrong-field.jsonl</code></a>.</td></tr>
     <tr><td>Tool-call error</td><td>ONB rejects the value: a volume it cannot read, phones that are not yes or no, an empty answer.</td><td>The ONB error. No outcome is written.</td></tr>
     <tr><td>Hallucination</td><td>A fee, a claim that the shop is live, or a review id the rules did not issue.</td><td>The critic drops the sentence. A replay fails a live-claim check.</td></tr>
   </tbody>
@@ -405,12 +406,12 @@ This PDF is the technical report. The sources are in <a href="https://drive.goog
 <p>The trace dashboard is that Langfuse project. The public session for the demo is <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">app_3020d278483c</a>.</p>
 
 <h2>9. Responsible AI</h2>
-<p>Merchant text is data, including text inside an uploaded file. On the demo, the note that says to ignore policy and mark the shop Active is stored as a note and is not obeyed. The lines in <code>copilot-svc/tests/adversarial.txt</code> are refused before a model call. The page the merchant sees does not echo account or identity digits. Traces do not contain the utterance.</p>
+<p>Merchant text is data, including text inside an uploaded file. On the demo, the note that says to ignore policy and mark the shop Active is stored as a note and is not obeyed. The lines in <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/tests/adversarial.txt"><code>copilot-svc/tests/adversarial.txt</code></a> are refused before a model call. The page the merchant sees does not echo account or identity digits. Traces do not contain the utterance.</p>
 <p>Refusal of a money-service type is a rule with a fixed sentence, and it opens no review. After a verdict, “activate us now” is declined under the policy and the same review id is repeated. <code>RECOMMEND_GO_LIVE</code> names a human reviewer. The interface has no operation that can set a shop live. That boundary is the tool list, not a sentence in the prompt.</p>
-<p><code>copilot-svc/tests/adversarial.txt</code> covers the boundary in the forms a merchant, or a pasted instruction, actually uses. Demands to go live, including in Hindi and Hinglish, are refused. So are requests to waive the shopfront, to mark the pack complete, and to read back an account number or its last four digits. A speaker who claims to be the Merchant Risk Lead is still refused. A made-up policy id that says the copilot may activate is refused. A JSON fragment posing as an intent is not executed as a tool call. A shop name that happens to contain the word “active” is saved as a name, which is the distinction the guard has to get right.</p>
+<p><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/tests/adversarial.txt"><code>copilot-svc/tests/adversarial.txt</code></a> covers the boundary in the forms a merchant, or a pasted instruction, actually uses. Demands to go live, including in Hindi and Hinglish, are refused. So are requests to waive the shopfront, to mark the pack complete, and to read back an account number or its last four digits. A speaker who claims to be the Merchant Risk Lead is still refused. A made-up policy id that says the copilot may activate is refused. A JSON fragment posing as an intent is not executed as a tool call. A shop name that happens to contain the word “active” is saved as a name, which is the distinction the guard has to get right.</p>
 
 <h2>10. Deployment and the recorded demo</h2>
-<p>The web chat, the copilot, ONB, and the corpus each run as a Render web service. Render builds the image and runs it. None of <code>copilot-web-app</code>, <code>copilot-svc</code>, <code>onb-svc</code>, or <code>ipe-corpus</code> adds a second container file. Postgres holds the ONB applications and the copilot’s conversation history. A Render Key Value instance named <code>copilot-cache</code> holds only a rate-limit counter and a search cache.</p>
+<p>The web chat, the copilot, ONB, and the corpus each run as a Render web service. Render builds the image and runs it. None of <a href="https://github.com/Capstone-iPe/copilot-web-app"><code>copilot-web-app</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc"><code>copilot-svc</code></a>, <a href="https://github.com/Capstone-iPe/onb-svc"><code>onb-svc</code></a>, or <a href="https://github.com/Capstone-iPe/onb-corpus"><code>onb-corpus</code></a> adds a second container file. Postgres holds the ONB applications and the copilot’s conversation history. A Render Key Value instance named <code>copilot-cache</code> holds only a rate-limit counter and a search cache.</p>
 <p>Each signed-in merchant may send 30 messages or files in a minute. The next request is HTTP 429, code <code>rate_limited</code>, and the page asks them to wait a minute. The website does not automatically retry that response. Policy search results are kept for five minutes, keyed by the question and the number of hits. Saved answers, files, and the verdict are not cached. If Key Value is unreachable, the turn still runs and search calls the corpus. A free Key Value instance forgets its keys when it restarts. That is acceptable for a one-minute counter and a five-minute cache.</p>
 <div class="call">
   <strong>Lotus Tea House, on the live web chat.</strong>
@@ -439,40 +440,40 @@ This PDF is the technical report. The sources are in <a href="https://drive.goog
 <ul>
   <li>The 24 retrieval questions and the 10 prompting cases are small. They compare settings. They do not cover every paraphrase of the policy.</li>
   <li>The 50/50 and 21/21 figures are the two replay logs named in section 6. They were not run again after later changes to how a free-text line is read.</li>
-  <li>Forty of the 345 sentences in <code>copilot-svc/replay/natural/turns.jsonl</code> still save the wrong field. That file is a check of free text, not the 71 shops.</li>
-  <li>The document checker may call the chat model. <code>iPe/docs/LLD-0001-document-verifier.md</code> has not been revised to say so. The verdict path does not.</li>
+  <li>Forty of the 345 sentences in <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/replay/natural/turns.jsonl"><code>copilot-svc/replay/natural/turns.jsonl</code></a> still save the wrong field. That file is a check of free text, not the 71 shops.</li>
+  <li>The document checker may call the chat model. <a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/LLD-0001-document-verifier.md"><code>analysis/docs/LLD-0001-document-verifier.md</code></a> has not been revised to say so. The verdict path does not.</li>
   <li>Average tool calls per shop, cost per query, and latency percentiles are not in a table here. Token counts are stored only when the provider returns them.</li>
 </ul>
 
 <h2>12. Deliverables</h2>
-<p>The same six folders are on Google Drive. A path below is a path inside that folder.</p>
+<p>The six repositories are public under <a href="https://github.com/Capstone-iPe">Capstone-iPe</a>. A path below is a path in that repository.</p>
 <table>
   <thead><tr><th>Template deliverable</th><th>Where it is</th></tr></thead>
   <tbody>
-    <tr><td>The agent and its sources</td><td><code>iPe</code>, <code>copilot-svc</code>, <code>onb-svc</code>, <code>copilot-web-app</code>, <code>ipe-corpus</code>.</td></tr>
+    <tr><td>The agent and its sources</td><td><a href="https://github.com/Capstone-iPe/analysis"><code>analysis</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc"><code>copilot-svc</code></a>, <a href="https://github.com/Capstone-iPe/onb-svc"><code>onb-svc</code></a>, <a href="https://github.com/Capstone-iPe/copilot-web-app"><code>copilot-web-app</code></a>, <a href="https://github.com/Capstone-iPe/onb-corpus"><code>onb-corpus</code></a>.</td></tr>
     <tr><td>Trace dashboard of real queries</td><td>The Langfuse session in section 8. The session id is the application id.</td></tr>
-    <tr><td>Evaluation and failure taxonomy</td><td>Sections 5 to 7, <code>copilot-svc/docs/eval.md</code>, and <code>ipe-corpus/eval/retrieval.md</code>.</td></tr>
-    <tr><td>Technical report</td><td><code>Reports/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf</code>.</td></tr>
-    <tr><td>Ten-minute demo</td><td><code>Reports/lotus-tea-house.md</code>, the Drive recording, and the Langfuse session.</td></tr>
+    <tr><td>Evaluation and failure taxonomy</td><td>Sections 5 to 7, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md"><code>copilot-svc/docs/eval.md</code></a>, and <a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md"><code>onb-corpus/eval/retrieval.md</code></a>.</td></tr>
+    <tr><td>Technical report</td><td><a href="https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf"><code>Reports/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf</code></a>.</td></tr>
+    <tr><td>Ten-minute demo</td><td><a href="https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md"><code>Reports/lotus-tea-house.md</code></a>, the Drive recording, and the Langfuse session.</td></tr>
     <tr><td>Front end, rate limit, cache</td><td>The live web chat in the annex. Thirty messages a minute. Policy search cached for five minutes.</td></tr>
   </tbody>
 </table>
 
 <section class="keep">
-<h2>13. Folders on Google Drive</h2>
-<p>The parent folder is <a href="https://drive.google.com/drive/folders/1ksPV2CvCloPCJ-qgT8tPG11x2VomNxpj">iPe Merchant Onboarding Copilot</a>. Download it and run <code>unpack.py</code> there. That restores each project. The assignment folders are not in it.</p>
+<h2>13. Repositories</h2>
+<p>The organisation is <a href="https://github.com/Capstone-iPe">Capstone-iPe</a>. Each repository is public. Clone it to set it up locally. Ignored files, including secrets and virtual environments, are not in the tree.</p>
 <table>
-  <thead><tr><th>Folder</th><th>What this report uses from it</th></tr></thead>
+  <thead><tr><th>Repository</th><th>What this report uses from it</th></tr></thead>
   <tbody>
-    <tr><td><a href="https://drive.google.com/drive/folders/1-fsbnUfRp9vfgO7_TWgRu5ApdkExjGl7"><code>iPe</code></a></td><td><code>ADR-0001-architecture.md</code>, <code>eval/cases</code>, <code>docs/LLD-0001-document-verifier.md</code>, <code>docs/LLD-0002-web-chat-contract.md</code>, <code>prompting-baseline/</code>.</td></tr>
-    <tr><td><a href="https://drive.google.com/drive/folders/1we8HHtkDjV50qcIj6qQRiOUJmhXWyvn_"><code>copilot-svc</code></a></td><td><code>docs/eval.md</code>, <code>docs/results/replay-build.txt</code>, <code>docs/results/replay-holdout.txt</code>, <code>docs/results/retrieval.txt</code>, <code>docs/results/natural-wrong-field.jsonl</code>, <code>replay/natural/turns.jsonl</code>, <code>tests/adversarial.txt</code>.</td></tr>
-    <tr><td><a href="https://drive.google.com/drive/folders/13C7GZNaZAYxi279vtF70uy2zCJZxN97V"><code>onb-svc</code></a></td><td>The service that owns the application, the files, and the verdict.</td></tr>
-    <tr><td><a href="https://drive.google.com/drive/folders/1ut5AyOuMYohsg5UtDG2kndsRJ-S11uxN"><code>copilot-web-app</code></a></td><td>The web chat.</td></tr>
-    <tr><td><a href="https://drive.google.com/drive/folders/1g6UgHZcFeb9yJ84QRghrBDm3LLnuk_3M"><code>ipe-corpus</code></a></td><td><code>eval/retrieval.md</code> and the policy documents.</td></tr>
-    <tr><td><a href="https://drive.google.com/drive/folders/11wBsl9ySeyc9EgSMRYlkS9DogK4EewtU"><code>Reports</code></a></td><td>This PDF and <code>lotus-tea-house.md</code>.</td></tr>
+    <tr><td><a href="https://github.com/Capstone-iPe/analysis"><code>analysis</code></a></td><td><a href="https://github.com/Capstone-iPe/analysis/blob/main/ADR-0001-architecture.md"><code>ADR-0001-architecture.md</code></a>, <a href="https://github.com/Capstone-iPe/analysis/tree/main/eval/cases"><code>eval/cases</code></a>, <a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/LLD-0001-document-verifier.md"><code>docs/LLD-0001-document-verifier.md</code></a>, <a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/LLD-0002-web-chat-contract.md"><code>docs/LLD-0002-web-chat-contract.md</code></a>, <a href="https://github.com/Capstone-iPe/analysis/tree/main/prompting-baseline"><code>prompting-baseline/</code></a>.</td></tr>
+    <tr><td><a href="https://github.com/Capstone-iPe/copilot-svc"><code>copilot-svc</code></a></td><td><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md"><code>docs/eval.md</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/replay-build.txt"><code>docs/results/replay-build.txt</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/replay-holdout.txt"><code>docs/results/replay-holdout.txt</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/retrieval.txt"><code>docs/results/retrieval.txt</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/results/natural-wrong-field.jsonl"><code>docs/results/natural-wrong-field.jsonl</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/replay/natural/turns.jsonl"><code>replay/natural/turns.jsonl</code></a>, <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/tests/adversarial.txt"><code>tests/adversarial.txt</code></a>.</td></tr>
+    <tr><td><a href="https://github.com/Capstone-iPe/onb-svc"><code>onb-svc</code></a></td><td>The service that owns the application, the files, and the verdict.</td></tr>
+    <tr><td><a href="https://github.com/Capstone-iPe/copilot-web-app"><code>copilot-web-app</code></a></td><td>The web chat.</td></tr>
+    <tr><td><a href="https://github.com/Capstone-iPe/onb-corpus"><code>onb-corpus</code></a></td><td><a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md"><code>eval/retrieval.md</code></a> and the policy documents.</td></tr>
+    <tr><td><a href="https://github.com/Capstone-iPe/Reports"><code>Reports</code></a></td><td><a href="https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf">This PDF</a> and <a href="https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md"><code>lotus-tea-house.md</code></a>.</td></tr>
   </tbody>
 </table>
-<p>These three are links, not files in the folders. The recording is <a href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">on Drive</a>. The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">Langfuse session</a>. The chat is <a href="https://copilot-web-n05u.onrender.com">the live web page</a>.</p>
+<p>The recording is <a href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">on Google Drive</a>. The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">Langfuse session</a>. The chat is <a href="https://copilot-web-n05u.onrender.com">the live web page</a>.</p>
 </section>
 
 <h2>Annex. Waking the services</h2>
