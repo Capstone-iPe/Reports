@@ -6,3 +6,4 @@ Restaurant in Pune, listed from "cafe", ₹12,00,000 a month, UPI and cards, pay
 
 - Recording: https://drive.google.com/file/d/1aGw2Dstrzxs5dF9-OQt8KpjT1I-ihrHL/view?usp=sharing
 - Langfuse session (public): https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b
+- Live web chat: https://copilot-web-n05u.onrender.com
