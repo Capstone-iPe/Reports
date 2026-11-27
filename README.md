@@ -11,3 +11,5 @@ Written record of the iPe merchant-onboarding copilot. The product code is in [a
 | [iPe_Merchant_Onboarding_Copilot_Trace_Dashboard.md](iPe_Merchant_Onboarding_Copilot_Trace_Dashboard.md) and [iPe_Trace_Dashboard_Updated_Starter.zip](iPe_Trace_Dashboard_Updated_Starter.zip) | A dashboard starter. Live traces are in Langfuse, not in this zip |
 
 The submission report is the one to read. The two markdown drafts describe an earlier build.
+
+This repository does not run a service. To run the corpus, ONB, the copilot, and the website on one machine, follow [Run the services locally](https://github.com/Capstone-iPe/analysis#run-the-services-locally). Each service README repeats the install steps for that process.
