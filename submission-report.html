@@ -97,8 +97,8 @@ This PDF is the file to upload. The code, the trace dashboard, and the demo are 
   <thead><tr><th>What the portal asks to include</th><th>Link</th></tr></thead>
   <tbody>
     <tr><td>Git repository, public</td><td><a class="url" href="https://github.com/orgs/Capstone-iPe/repositories">https://github.com/orgs/Capstone-iPe/repositories</a></td></tr>
-    <tr><td>Trace dashboard</td><td><a class="url" href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c</a></td></tr>
-    <tr><td>10-minute demo</td><td><a class="url" href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing</a></td></tr>
+    <tr><td>Trace dashboard</td><td><a class="url" href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b">https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b</a></td></tr>
+    <tr><td>10-minute demo</td><td><a class="url" href="https://drive.google.com/file/d/1aGw2Dstrzxs5dF9-OQt8KpjT1I-ihrHL/view?usp=sharing">https://drive.google.com/file/d/1aGw2Dstrzxs5dF9-OQt8KpjT1I-ihrHL/view?usp=sharing</a></td></tr>
     <tr><td>Model card</td><td>Section 9. Intended use, failure modes, refusals, and adversarial tests.</td></tr>
   </tbody>
 </table>
@@ -423,7 +423,7 @@ This PDF is the file to upload. The code, the trace dashboard, and the demo are 
 <h2>8. Traces of real turns</h2>
 <p>Every message, upload, and submit that the copilot accepts is one trace. The service writes the trace to Postgres and posts it to Langfuse Cloud in the US region, on the current OpenTelemetry trace endpoint. The session id is the application id, which begins with <code>app_</code>. The turn is named <code>copilot.message</code>, <code>copilot.file</code>, or <code>copilot.submit</code>. Child spans cover the model read, the policy search, and the explanation.</p>
 <p>Content capture is off. A trace carries the decision fields, the timing, the model name when it is known, and the retrieval ranks. It does not carry the merchant’s words, the prompt, or the file. A row remains in the outbox until Langfuse accepts the whole turn. A retry sends the same trace and span ids. Authentication failures that happen before a turn is reserved are not traces.</p>
-<p>The trace dashboard is that Langfuse project. The public session for the demo is <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">app_3020d278483c</a>.</p>
+<p>The trace dashboard is that Langfuse project. The public session for the demo is <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b">app_2fc9ace8d96b</a>.</p>
 
 <h2>9. Model card</h2>
 <p><strong>Intended use.</strong> <code>Qwen/Qwen3-8B</code> asks the next question, explains why a document is required, and cites a passage the corpus returned. The user is one merchant, one shop, in the web chat. The model does not choose the outcome, the assignee, or the review id, and it cannot turn a shop on. Embeddings are <code>bge-small-en-v1.5</code>, used only to search the policy corpus. Weights are not trained.</p>
@@ -437,8 +437,8 @@ This PDF is the file to upload. The code, the trace dashboard, and the demo are 
 <div class="call">
   <strong>Lotus Tea House, on the live web chat.</strong>
   The merchant asks why the legal name is needed, then gives Lotus Tea House, Pune, a cafe, ₹12,00,000, UPI and cards, and yes to storing payer phones. Registration and owner identity are real uploads. Bank proof, the shopfront photograph, and the addendum are declined. The note demands Active. Submit leaves the shop in review with the Merchant Risk Lead. A later demand to activate does not change the review id. A second conversation, a hawala shop in Pune, is refused and has no review id.
-  The recording is on <a href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">Google Drive</a>.
-  The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">Langfuse session</a>.
+  The recording is on <a href="https://drive.google.com/file/d/1aGw2Dstrzxs5dF9-OQt8KpjT1I-ihrHL/view?usp=sharing">Google Drive</a>.
+  The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b">Langfuse session</a>.
   The live chat is <a href="https://copilot-web-n05u.onrender.com">copilot-web-n05u.onrender.com</a>.
 </div>
 <table>
@@ -494,7 +494,7 @@ This PDF is the file to upload. The code, the trace dashboard, and the demo are 
     <tr><td><a href="https://github.com/Capstone-iPe/Reports"><code>Reports</code></a></td><td><a href="https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf">This PDF</a> and <a href="https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md"><code>lotus-tea-house.md</code></a>.</td></tr>
   </tbody>
 </table>
-<p>The recording is <a href="https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing">on Google Drive</a>. The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">Langfuse session</a>. The chat is <a href="https://copilot-web-n05u.onrender.com">the live web page</a>.</p>
+<p>The recording is <a href="https://drive.google.com/file/d/1aGw2Dstrzxs5dF9-OQt8KpjT1I-ihrHL/view?usp=sharing">on Google Drive</a>. The trace is the <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b">Langfuse session</a>. The chat is <a href="https://copilot-web-n05u.onrender.com">the live web page</a>.</p>
 </section>
 
 <h2>Annex. Waking the services</h2>

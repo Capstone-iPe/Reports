@@ -270,7 +270,7 @@ The starter package is not, by itself, evidence of a deployed production dashboa
 - Retrieval results: https://github.com/Capstone-iPe/onb-corpus/tree/main/eval/results
 - Analysis project site: https://capstone-ipe.github.io/analysis/
 - Corpus project site: https://capstone-ipe.github.io/onb-corpus/
-- Langfuse project/session link referenced by the analysis README: https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c
+- Langfuse project/session link referenced by the analysis README: https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b
 
 ---
 

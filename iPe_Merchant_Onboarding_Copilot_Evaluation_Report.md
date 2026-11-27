@@ -154,4 +154,4 @@ Do not log raw uploads, bank details, identity numbers, phone numbers, credentia
 - Analysis project dashboard: https://capstone-ipe.github.io/analysis/
 - Corpus project dashboard: https://capstone-ipe.github.io/onb-corpus/
 - Lotus Tea House demo notes: https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md
-- Public Langfuse session (as linked from the analysis README): https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c
+- Public Langfuse session (as linked from the analysis README): https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b
